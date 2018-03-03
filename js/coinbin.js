@@ -1233,6 +1233,34 @@ $(document).ready(function() {
 		});
 	}
 
+	// broadcast transaction via supernet
+	function rawSubmitSupernet_Komodo(thisbtn) {
+		$(thisbtn).val('Please wait, loading...').attr('disabled',true);
+		$.ajax ({
+			type: "POST",
+			// TODO: fix URL params
+			url: coinjs.host+'?uid='+coinjs.uid+'&key='+coinjs.key+'&XXX=123',
+			data: {'rawtx':$("#rawTransaction").val()},
+			dataType: "xml",
+			error: function(data) {
+				$("#rawTransactionStatus").addClass('alert-danger').removeClass('alert-success').removeClass("hidden").html(" There was an error submitting your request, please try again").prepend('<span class="glyphicon glyphicon-exclamation-sign"></span>');
+			},
+                        success: function(data) {
+				$("#rawTransactionStatus").html(unescape($(data).find("response").text()).replace(/\+/g,' ')).removeClass('hidden');
+				if($(data).find("result").text()==1){
+					$("#rawTransactionStatus").addClass('alert-success').removeClass('alert-danger');
+					$("#rawTransactionStatus").html('txid: '+$(data).find("txid").text());
+				} else {
+					$("#rawTransactionStatus").addClass('alert-danger').removeClass('alert-success').prepend('<span class="glyphicon glyphicon-exclamation-sign"></span> ');
+				}
+			},
+			complete: function(data, status) {
+				$("#rawTransactionStatus").fadeOut().fadeIn();
+				$(thisbtn).val('Submit').attr('disabled',false);				
+			}
+		});
+	}
+
 	// broadcast transaction via chain.so (mainnet)
 	function rawSubmitChainso_BitcoinMainnet(thisbtn){ 
 		$(thisbtn).val('Please wait, loading...').attr('disabled',true);
@@ -1825,6 +1853,10 @@ $(document).ready(function() {
 		} else if(host=="cryptoid.info_carboncoin"){
 			$("#rawSubmitBtn").click(function(){
 				rawSubmitcryptoid_Carboncoin(this);
+			});
+		} else if(host=="kmd.explorer.supernet.org_komodo"){
+			$("#rawSubmitBtn").click(function(){
+				rawSubmitSupernet_Komodo(this);
 			});
 		} else {
 			$("#rawSubmitBtn").click(function(){
