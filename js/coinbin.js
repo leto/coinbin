@@ -1239,7 +1239,7 @@ $(document).ready(function() {
 		$.ajax ({
 			type: "POST",
 			// TODO: fix URL params
-			url: coinjs.host+'?uid='+coinjs.uid+'&key='+coinjs.key+'&XXX=123',
+			url: coinjs.host+'/api/tx/send/'
 			data: {'rawtx':$("#rawTransaction").val()},
 			dataType: "xml",
 			error: function(data) {
